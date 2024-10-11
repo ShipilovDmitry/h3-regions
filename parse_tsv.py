@@ -1,14 +1,7 @@
-from dataclasses import dataclass
 from typing import Iterator
+from common_types import Region
 import pandas as pd
 import io
-
-
-@dataclass
-class Region:
-    id: str
-    attributes_geojson: str
-    wkb: str
 
 def read_tsv(file_path) -> Iterator[Region]:
     with open(file_path, 'r') as file:
