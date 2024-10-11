@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "h3-regions"
+version = "0.1.0"
+description = ""
+authors = ["d.shipilov <d.shipilov@vk.team>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+shapely = "^2.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
