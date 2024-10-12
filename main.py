@@ -27,7 +27,7 @@ def main():
             region_from_json.id, region_from_json.name, blob_of_h3_indexes
         )
         sql_writer.insert_region(sql_region)
-
+    
 
 if __name__ == "__main__":
     main()

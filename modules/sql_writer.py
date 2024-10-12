@@ -18,7 +18,9 @@ class SQLWriter:
             )
             self.connection.commit()
         except sqlite3.Error as e:
-            print(e)
+            raise Exception(f"Error while creating database: {e}")
+
+        print(f"Start dumpping to {db_name}")
 
     def insert_region(self, region: SQLRegion) -> None:
         try:
@@ -29,3 +31,7 @@ class SQLWriter:
             self.connection.commit()
         except sqlite3.Error as e:
             print(e)
+
+    def __del__(self) -> None:
+        self.connection.close()
+        print("Connetction closed")

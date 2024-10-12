@@ -1,5 +1,5 @@
 from typing import Iterator
-from common_types import RegionFromJson
+from modules.common_types import RegionFromJson
 import pandas as pd
 import io
 
