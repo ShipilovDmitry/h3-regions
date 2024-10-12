@@ -17,8 +17,3 @@ H3CellId: TypeAlias = int
 class Coordinate:
     lat: float
     lon: float
-
-
-class HexagonsBLOB:
-    amount: int
-    hexagons: list[H3CellId]

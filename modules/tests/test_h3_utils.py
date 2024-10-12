@@ -22,7 +22,7 @@ from modules.common_types import Coordinate
                 617700169961963519,
             ],
         )
-    ]
+    ],
 )
 def test_get_h3_cells_from_polygon(polygon, resolution, expected_result):
     # call the function with the input values
