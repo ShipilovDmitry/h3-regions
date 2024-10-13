@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from modules.parse_tsv import read_tsv
+from modules.parse_utils import read_tsv
 from modules.wbk_utils import get_polygon_from_wkb
 from modules.h3_utils import get_h3_cells_from_polygon
 from modules.serializer import cell_ids_to_bytes
