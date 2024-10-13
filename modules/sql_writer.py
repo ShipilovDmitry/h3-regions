@@ -28,10 +28,10 @@ class SQLWriter:
                 "INSERT INTO regions (id, name, hexagons) VALUES (?, ?, ?)",
                 (region.id, region.name, region.hexagons_blob),
             )
-            self.connection.commit()
         except sqlite3.Error as e:
             print(e)
 
     def __del__(self) -> None:
+        self.connection.commit()
         self.connection.close()
         print("Connetction closed")

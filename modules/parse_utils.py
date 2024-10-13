@@ -16,4 +16,4 @@ def read_tsv(file_path: str) -> Iterator[RegionFromJson]:
 def get_name_from_geojson(geojson: str) -> str:
     data = json.loads(geojson)
     df = pd.DataFrame(data["properties"])
-    return df["locales"]["en"]["name"]
+    return df["locales"]["default"]["name"]
