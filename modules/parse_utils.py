@@ -12,6 +12,7 @@ def read_tsv(file_path: str) -> Iterator[RegionFromJson]:
             id, attributes_geojson, wbk = df.columns[0], df.columns[1], df.columns[2]
             yield RegionFromJson(id, attributes_geojson, wbk)
 
+
 def get_name_from_geojson(geojson: str) -> str:
     data = json.loads(geojson)
     df = pd.DataFrame(data["properties"])
