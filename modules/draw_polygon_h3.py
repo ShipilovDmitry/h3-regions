@@ -49,6 +49,7 @@ def draw_polygon(p):
     plot_shape_and_cells(poly, 10)
     plt.show()
 
+
 def draw_mulitpolygon(p):
     polygons = [h3.LatLngPoly(polygon) for polygon in p]
     poly = h3.LatLngMultiPoly(*polygons)
