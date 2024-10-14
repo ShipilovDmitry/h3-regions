@@ -44,11 +44,13 @@ def plot_shape_and_cells(shape, res=9):
     fig.tight_layout()
 
 
-def draw_polygon(polygon, is_multipolygon=False):
-    if is_multipolygon:
-        polygons = [h3.LatLngPoly(p) for p in polygon]
-        poly = h3.LatLngMultiPoly(*polygons)
-    else:
-        poly = h3.LatLngPoly(polygon)
+def draw_polygon(p):
+    poly = h3.LatLngPoly(p)
+    plot_shape_and_cells(poly, 10)
+    plt.show()
+
+def draw_mulitpolygon(p):
+    polygons = [h3.LatLngPoly(polygon) for polygon in p]
+    poly = h3.LatLngMultiPoly(*polygons)
     plot_shape_and_cells(poly, 10)
     plt.show()

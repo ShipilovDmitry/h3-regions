@@ -1,7 +1,7 @@
 from modules.parse_utils import get_name_from_geojson, read_tsv
 from modules.wbk_utils import get_polygon_from_wkb, from_wkb
 from shapely.geometry import Polygon, MultiPolygon
-from modules.draw_polygon_h3 import draw_polygon
+from modules.draw_polygon_h3 import draw_mulitpolygon, draw_polygon
 from pathlib import Path
 import pytest
 
@@ -34,10 +34,10 @@ def test_draw_polygon() -> None:
     with open(asset_path, "r") as f:
         wkb = f.read()
 
-    polygon = get_polygon_from_wkb(wkb)
+    coordinates = get_polygon_from_wkb(wkb)
 
-    list_of_tuples = [(coordinate.lat, coordinate.lon) for coordinate in polygon]
-    # draw_polygon(list_of_tuples)
+    polygon = [(coordinate.lat, coordinate.lon) for coordinate in coordinates]
+    # draw_polygon(polygon)
 
 
 def test_draw_multipolygon() -> None:
@@ -50,4 +50,4 @@ def test_draw_multipolygon() -> None:
     polygons = list(multipolygon.geoms)
     h3_polygons = [[(y, x) for x, y in polygon.exterior.coords] for polygon in polygons]
 
-    # draw_polygon(h3_polygons , True)
+    # draw_mulitpolygon(h3_polygons)
