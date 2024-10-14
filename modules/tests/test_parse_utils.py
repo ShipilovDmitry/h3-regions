@@ -5,6 +5,7 @@ import pytest
 
 ASSETS_DIR = Path(__file__).parent / "assets"
 
+
 @pytest.mark.parametrize(("asset_name", "expected"), [("attributes.geojson", "Москва")])
 def test_get_name_from_geojson(asset_name: str, expected: str):
     asset_path = ASSETS_DIR / asset_name
@@ -14,10 +15,10 @@ def test_get_name_from_geojson(asset_name: str, expected: str):
     result = get_name_from_geojson(geojson)
     assert result == expected
 
+
 def test_multipolygon_moscow() -> None:
     moscow_asset = "moscow.tsv"
     asset_path = ASSETS_DIR / moscow_asset
     for region in read_tsv(asset_path):
         with pytest.raises(ValueError):
             polygon = get_polygon_from_wkb(region.wkb)
-        
