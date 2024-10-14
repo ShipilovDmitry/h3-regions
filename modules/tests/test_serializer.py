@@ -1,4 +1,7 @@
 from modules.serializer import cell_ids_to_bytes, bytes_to_cell_ids
+import h3
+from modules.draw_polygon_h3 import draw_cells
+import sqlite3
 
 
 def test_cell_ids_to_bytes():
@@ -23,3 +26,17 @@ def test_bytes_to_cell_ids():
     # check the output against the expected result
     expected_result = [617700169965371391, 617700169958031359, 617700169961701375]
     assert result == expected_result
+
+
+def test_draw_cells_from_bytes():
+    return
+    db_path = ""
+    connection = sqlite3.connect(db_path)
+    cursor = connection.cursor()
+    result: bytes = cursor.execute("SELECT hexagons FROM regions WHERE id = '71000000013E69DF'").fetchall()[0][0]
+    cells = bytes_to_cell_ids(result)
+
+    str_cells = [h3.int_to_str(cell) for cell in cells]
+
+
+    draw_cells(str_cells)
