@@ -24,7 +24,7 @@ def test_multipolygon_moscow() -> None:
     with open(asset_path, "r") as f:
         wkb = f.read()
     with pytest.raises(ValueError):
-        polygon = get_polygon_from_wkb(wkb)
+        polygon: Polygon = get_polygon_from_wkb(wkb)
 
 
 # for drawing polygon uncomment last line in function
@@ -45,7 +45,7 @@ def test_draw_multipolygon() -> None:
     asset_path = ASSETS_DIR / moscow_asset
     with open(asset_path, "r") as f:
         wkb = f.read()
-    multipolygon = from_wkb(wkb)
+    multipolygon: MultiPolygon = from_wkb(wkb)
 
     polygons = list(multipolygon.geoms)
     h3_polygons = [[(y, x) for x, y in polygon.exterior.coords] for polygon in polygons]
