@@ -33,10 +33,11 @@ def test_draw_cells_from_bytes():
     db_path = ""
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
-    result: bytes = cursor.execute("SELECT hexagons FROM regions WHERE id = '71000000013E69DF'").fetchall()[0][0]
+    result: bytes = cursor.execute(
+        "SELECT hexagons FROM regions WHERE id = '71000000013E69DF'"
+    ).fetchall()[0][0]
     cells = bytes_to_cell_ids(result)
 
     str_cells = [h3.int_to_str(cell) for cell in cells]
-
 
     draw_cells(str_cells)
