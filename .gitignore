@@ -2,3 +2,5 @@
 *.json*
 *.DS*
 __pycache__/
+*.db
+*.log
