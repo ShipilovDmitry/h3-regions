@@ -18,11 +18,12 @@ def test_get_name_from_geojson(asset_name: str, expected: str):
 
 
 def test_multipolygon_moscow() -> None:
-    moscow_asset = "moscow_multipolygon.tsv"
+    moscow_asset = "moscow_multipolygon.txt"
     asset_path = ASSETS_DIR / moscow_asset
-    for region in read_tsv(asset_path):
-        with pytest.raises(ValueError):
-            polygon = get_polygon_from_wkb(region.wkb)
+    with open(asset_path, "r") as f:
+        wkb = f.read()
+    with pytest.raises(ValueError):
+        polygon = get_polygon_from_wkb(wkb)
 
 
 # for drawing polygon uncomment last line in function
