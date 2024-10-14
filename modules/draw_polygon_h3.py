@@ -43,9 +43,8 @@ def plot_shape_and_cells(shape, res=9):
     plot_cells(h3.h3shape_to_cells(shape, res), ax=axs[1])
     fig.tight_layout()
 
-def draw_polygon(polygon = None):
 
-
+def draw_polygon(polygon=None):
     moscow = [
         (55.895396, 37.352655),
         (55.553600, 37.421319),
@@ -55,7 +54,6 @@ def draw_polygon(polygon = None):
 
     if polygon is None:
         polygon = moscow
-
 
     poly = h3.LatLngPoly(polygon)
     plot_shape_and_cells(poly, 10)
