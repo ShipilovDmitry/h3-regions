@@ -1,5 +1,6 @@
 from modules.parse_utils import get_name_from_geojson, read_tsv
 from modules.wbk_utils import get_polygon_from_wkb
+from modules.draw_polygon_h3 import draw_polygon
 from pathlib import Path
 import pytest
 
@@ -22,3 +23,10 @@ def test_multipolygon_moscow() -> None:
     for region in read_tsv(asset_path):
         with pytest.raises(ValueError):
             polygon = get_polygon_from_wkb(region.wkb)
+
+
+def test_draw_polygon() -> None:
+    # test for drawing testing
+    # remove return for drawing
+    return
+    draw_polygon()
