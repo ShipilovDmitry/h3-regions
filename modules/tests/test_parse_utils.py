@@ -1,5 +1,6 @@
 from modules.parse_utils import get_name_from_geojson, read_tsv
-from modules.wbk_utils import get_polygon_from_wkb
+from modules.wbk_utils import get_polygon_from_wkb, from_wkb
+from shapely.geometry import Polygon, MultiPolygon
 from modules.draw_polygon_h3 import draw_polygon
 from pathlib import Path
 import pytest
@@ -37,3 +38,19 @@ def test_draw_polygon() -> None:
 
     list_of_tuples = [(coordinate.lat, coordinate.lon) for coordinate in polygon]
     # draw_polygon(list_of_tuples)
+
+
+def test_draw_multipolygon() -> None:
+    moscow_asset = "moscow_multipolygon.txt"
+    asset_path = ASSETS_DIR / moscow_asset
+    with open(asset_path, "r") as f:
+        wkb = f.read()
+    multipolygon = from_wkb(wkb)
+
+    polygons = list(multipolygon.geoms)
+    h3_polygons = []
+    for polygon in polygons:
+        coordinates = [(y, x) for x, y in polygon.exterior.coords]
+        h3_polygons.append(coordinates)
+
+    # draw_polygon(h3_polygons , True)
