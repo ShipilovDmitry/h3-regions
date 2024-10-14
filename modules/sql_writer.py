@@ -7,13 +7,6 @@ class SQLRegion:
         self.name: str = name
         self.hexagons_blob: bytes = hexagons_blob
 
-    @classmethod
-    def consturuct_invalid_regions(cls) -> "SQLRegion":
-        return cls("invalid", "invalid", b"")
-
-    def is_valid(self) -> bool:
-        return self.id != "invalid" and self.name != "invalid"
-
 
 class SQLWriter:
     def __init__(self, db_name: str) -> None:

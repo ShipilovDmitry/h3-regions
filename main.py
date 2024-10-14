@@ -24,7 +24,7 @@ def sql_insert(rows: multiprocessing.Queue) -> None:
         sql_writer.insert_region(row)
 
 
-def h3_long_operation(region_from_json: str) -> SQLRegion:
+def h3_long_operation(region_from_json: str) -> SQLRegion | None:
     try:
         blob_of_h3_indexes: bytes = cell_ids_to_bytes(
             get_h3_cells_from_polygon(
@@ -33,7 +33,7 @@ def h3_long_operation(region_from_json: str) -> SQLRegion:
         )
     except Exception as e:
         print(e)
-        return SQLRegion.consturuct_invalid_regions()
+        return None
 
     region_name = get_name_from_geojson(region_from_json.attributes_geojson)
     sql_region = SQLRegion(region_from_json.id, region_name, blob_of_h3_indexes)
@@ -63,8 +63,9 @@ def main():
         for sql_row in pool.imap_unordered(
             h3_long_operation, iter(lines_from_file.get, None)
         ):
-            if not sql_row.is_valid():
+            if sql_row is None:
                 continue
+
             sql_rows.put(sql_row)
 
     # Signal for the end of the processing

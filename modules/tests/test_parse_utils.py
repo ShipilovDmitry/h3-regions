@@ -48,9 +48,6 @@ def test_draw_multipolygon() -> None:
     multipolygon = from_wkb(wkb)
 
     polygons = list(multipolygon.geoms)
-    h3_polygons = []
-    for polygon in polygons:
-        coordinates = [(y, x) for x, y in polygon.exterior.coords]
-        h3_polygons.append(coordinates)
+    h3_polygons = [[(y, x) for x, y in polygon.exterior.coords] for polygon in polygons]
 
     # draw_polygon(h3_polygons , True)
