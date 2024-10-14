@@ -3,6 +3,7 @@ from modules.common_types import RegionFromJson
 import pandas as pd
 import io
 import json
+import multiprocessing
 
 
 def read_tsv(file_path: str) -> Iterator[RegionFromJson]:
@@ -11,6 +12,14 @@ def read_tsv(file_path: str) -> Iterator[RegionFromJson]:
             df = pd.read_csv(io.StringIO(line), sep="\t")
             id, attributes_geojson, wbk = df.columns[0], df.columns[1], df.columns[2]
             yield RegionFromJson(id, attributes_geojson, wbk)
+
+
+def read_tsv_queue(file_path: str, queue: multiprocessing.Queue) -> None:
+    with open(file_path, "r") as file:
+        for line in file:
+            df = pd.read_csv(io.StringIO(line), sep="\t")
+            id, attributes_geojson, wbk = df.columns[0], df.columns[1], df.columns[2]
+            queue.put(RegionFromJson(id, attributes_geojson, wbk))
 
 
 def get_name_from_geojson(geojson: str) -> str:
