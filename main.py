@@ -89,10 +89,12 @@ def sync_main():
 
         sql_writer.insert_region(sql_region)
 
+
 def remove_db():
     db_path = Path(__file__).parent / f"{FILENAME}.db"
     if os.path.exists(db_path):
         os.remove(db_path)
+
 
 def main():
     remove_db()

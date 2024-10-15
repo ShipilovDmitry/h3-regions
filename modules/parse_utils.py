@@ -25,5 +25,16 @@ def read_tsv_queue(file_path: str, queue: multiprocessing.Queue) -> None:
 def get_name_from_geojson(geojson: str) -> str:
     data = json.loads(geojson)
     df = pd.DataFrame(data["properties"])
-    # TODO add name with country, region and city
-    return df["locales"]["default"]["name"]
+
+    result = str() 
+    default: pd.DataFrame = df["locales"]["default"]
+    
+    if "address" in default:
+        address: pd.DataFrame = df["locales"]["default"]["address"]
+        if "country" in address:
+            result = address["country"] 
+        
+        if "region" in address:
+            result = ",".join([result, address["region"]])
+    result = ",".join([result, default["name"]])
+    return result

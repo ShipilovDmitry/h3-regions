@@ -8,7 +8,9 @@ import pytest
 ASSETS_DIR = Path(__file__).parent / "assets"
 
 
-@pytest.mark.parametrize(("asset_name", "expected"), [("attributes.geojson", "Москва")])
+@pytest.mark.parametrize(
+    ("asset_name", "expected"), [("attributes.geojson", "Россия,Москва,Москва")]
+)
 def test_get_name_from_geojson(asset_name: str, expected: str):
     asset_path = ASSETS_DIR / asset_name
     with open(asset_path, "r") as f:
