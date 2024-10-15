@@ -8,7 +8,7 @@ from modules.serializer import cell_ids_to_bytes
 from modules.sql_writer import SQLWriter, SQLRegion
 
 
-PATH_TO_FILE: str = "/Users/d.shipilov/vkmaps/h3-regions/town-city-village.jsonl"
+PATH_TO_FILE: str = "/Users/d.shipilov/vkmaps/h3-regions/cut-town-city-village.jsonl"
 FILENAME = Path(PATH_TO_FILE).stem
 
 H3_RESOLUTION: int = 10
@@ -19,6 +19,7 @@ def sql_insert(rows: multiprocessing.Queue) -> None:
     while True:
         row = rows.get()
         if row is None:
+            del sql_writer
             break
         sql_writer.insert_region(row)
 
@@ -26,7 +27,7 @@ def sql_insert(rows: multiprocessing.Queue) -> None:
 def h3_long_operation(region_from_json: str) -> SQLRegion | None:
     try:
         blob_of_h3_indexes: bytes = cell_ids_to_bytes(
-            get_h3_cells_from_wkb(region_from_json.wkb), H3_RESOLUTION
+            get_h3_cells_from_wkb(region_from_json.wkb, H3_RESOLUTION)
         )
     except Exception as e:
         print(e)
@@ -42,22 +43,19 @@ def multiprocessing_main():
     lines_from_file = multiprocessing.Queue()
     sql_rows = multiprocessing.Queue()
 
-    p3 = multiprocessing.Process(target=sql_insert, args=(sql_rows,))
-    p1 = multiprocessing.Process(
+    p1 = multiprocessing.Process(target=sql_insert, args=(sql_rows,))
+    p2 = multiprocessing.Process(
         target=read_tsv_queue, args=(PATH_TO_FILE, lines_from_file)
     )
 
-    p3.start()
     p1.start()
+    p2.start()
 
     # Create a process pool and map the process_data function to the input queue
     with multiprocessing.Pool() as pool:
         for sql_row in pool.imap_unordered(
             h3_long_operation, iter(lines_from_file.get, None)
         ):
-            if sql_row is None:
-                continue
-
             sql_rows.put(sql_row)
 
     # Signal for the end of the processing
@@ -65,13 +63,13 @@ def multiprocessing_main():
 
     # Wait for the processes to finish
     p1.join()
-    p3.join()
+    p2.join()
 
 
 def sync_main():
     sql_writer = SQLWriter(FILENAME)
 
-    for i, region_from_json in enumerate(read_tsv(PATH_TO_FILE)):
+    for region_from_json in read_tsv(PATH_TO_FILE):
         try:
             blob_of_h3_indexes: bytes = cell_ids_to_bytes(
                 get_h3_cells_from_wkb(region_from_json.wkb, H3_RESOLUTION)
@@ -86,8 +84,6 @@ def sync_main():
 
         sql_writer.insert_region(sql_region)
 
-        if i == 100:
-            break
 
 
 def remove_db():
@@ -99,7 +95,7 @@ def remove_db():
 def main():
     remove_db()
 
-    sync_main()
+    # sync_main()
     # multiprocessing_main()
 
 
