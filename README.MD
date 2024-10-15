@@ -1,0 +1,1 @@
+https://amir.rachum.com/python-tips-iterate-with-a-sentinel-value/
