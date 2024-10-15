@@ -34,7 +34,7 @@ def test_draw_cells_from_bytes():
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     result: bytes = cursor.execute(
-        "SELECT hexagons FROM regions WHERE id = '71000000013DE649'"
+        "SELECT hexagons FROM regions WHERE id = '71000000013DE8C5'"
     ).fetchall()[0][0]
     cells = bytes_to_cell_ids(result)
 

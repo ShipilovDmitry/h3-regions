@@ -1,4 +1,5 @@
 from modules.parse_utils import get_name_from_geojson, read_tsv
+from modules.draw_polygon_h3 import draw_mulitpolygon
 import h3
 from modules.wbk_utils import get_h3_cells_from_wkb, from_wkb
 from shapely.geometry import MultiPolygon
@@ -54,3 +55,15 @@ def test_draw_multipolygon() -> None:
     ]
 
     # draw_mulitpolygon(h3_polygons)
+
+def test_palauli_multipolygon() -> None:
+    palauli = "palauli.wkb"
+    asset_path = ASSETS_DIR / palauli
+    with open(asset_path, "r") as f:
+        wkb = f.read()
+    multipolygon: MultiPolygon = from_wkb(wkb)
+    h3_polygons = [
+        [(y, x) for x, y in polygon.exterior.coords] for polygon in multipolygon.geoms
+    ]
+    # draw_mulitpolygon(h3_polygons)
+    assert multipolygon.geom_type == "MultiPolygon"
