@@ -26,7 +26,8 @@ from modules.common_types import Coordinate
 )
 def test_get_h3_cells_from_polygon(polygon, resolution, expected_result):
     # call the function with the input values
-    result = get_h3_cells_from_polygon(polygon, resolution)
+    prepared_polygon = [(coordinate.lat, coordinate.lon) for coordinate in polygon]
+    result = get_h3_cells_from_polygon(prepared_polygon, resolution)
 
     # check the output against the expected result
     assert result == expected_result

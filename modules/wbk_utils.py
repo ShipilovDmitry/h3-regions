@@ -3,27 +3,25 @@ from modules.h3_utils import get_h3_cells_from_polygon, get_h3_cells_from_multip
 from modules.common_types import Coordinate, H3CellId
 
 
-def process_polygon(polygon: Polygon, resolution: int) -> list[H3CellId]:
-    coordinates = [Coordinate(lat=y, lon=x) for x, y in polygon.exterior.coords]
-    return get_h3_cells_from_polygon(coordinates, resolution)
-
-
-def process_multipolygon(multipolygon: MultiPolygon, resolution: int) -> list[H3CellId]:
-    p = []
-    for polygon in multipolygon.geoms:
-        coordinates = [Coordinate(lat=y, lon=x) for x, y in polygon.exterior.coords]
-        p.append(coordinates)
-    return get_h3_cells_from_multipolygon(p, resolution)
+def process_multipolygon(
+    wkb_multipolygon: MultiPolygon, resolution: int
+) -> list[H3CellId]:
+    formatted_multipolygon = []
+    for polygon in wkb_multipolygon.geoms:
+        formatted_polygon = [(y, x) for x, y in polygon.exterior.coords]
+        formatted_multipolygon.append(formatted_polygon)
+    return get_h3_cells_from_multipolygon(formatted_multipolygon, resolution)
 
 
 def get_h3_cells_from_wkb(wkb: str, resolution: int) -> list[H3CellId]:
-    p: Polygon | MultiPolygon = from_wkb(wkb)
+    wkb_region: Polygon | MultiPolygon = from_wkb(wkb)
 
-    if p.geom_type == "Polygon":
-        return process_polygon(p, resolution)
+    if wkb_region.geom_type == "Polygon":
+        formatted_polygon = [(y, x) for x, y in wkb_region.exterior.coords]
+        return get_h3_cells_from_polygon(formatted_polygon, resolution)
 
-    if p.geom_type == "MultiPolygon":
-        return process_multipolygon(p, resolution)
+    if wkb_region.geom_type == "MultiPolygon":
+        return process_multipolygon(wkb_region, resolution)
 
     raise ValueError(
         f"Invalid WKB data. Expected a Polygon. Geometry type is: {p.geom_type}"
