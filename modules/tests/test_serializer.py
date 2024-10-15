@@ -30,11 +30,11 @@ def test_bytes_to_cell_ids():
 
 def test_draw_cells_from_bytes():
     return
-    db_path = ""
+    db_path = "/Users/d.shipilov/vkmaps/h3-regions/town-city-village.db"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     result: bytes = cursor.execute(
-        "SELECT hexagons FROM regions WHERE id = '71000000013E69DF'"
+        "SELECT hexagons FROM regions WHERE id = '71000000013DE649'"
     ).fetchall()[0][0]
     cells = bytes_to_cell_ids(result)
 

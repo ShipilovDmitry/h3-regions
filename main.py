@@ -3,8 +3,7 @@ import os
 import multiprocessing
 
 from modules.parse_utils import read_tsv, read_tsv_queue, get_name_from_geojson
-from modules.wbk_utils import get_polygon_from_wkb
-from modules.h3_utils import get_h3_cells_from_polygon
+from modules.wbk_utils import get_h3_cells_from_wkb
 from modules.serializer import cell_ids_to_bytes
 from modules.sql_writer import SQLWriter, SQLRegion
 
@@ -15,30 +14,30 @@ FILENAME = Path(PATH_TO_FILE).stem
 H3_RESOLUTION: int = 10
 
 
+def sql_insert(rows: multiprocessing.Queue) -> None:
+    sql_writer = SQLWriter(FILENAME)
+    while True:
+        row = rows.get()
+        if row is None:
+            break
+        sql_writer.insert_region(row)
+
+
+def h3_long_operation(region_from_json: str) -> SQLRegion | None:
+    try:
+        blob_of_h3_indexes: bytes = cell_ids_to_bytes(
+            get_h3_cells_from_wkb(region_from_json.wkb), H3_RESOLUTION
+        )
+    except Exception as e:
+        print(e)
+        return None
+
+    region_name = get_name_from_geojson(region_from_json.attributes_geojson)
+    sql_region = SQLRegion(region_from_json.id, region_name, blob_of_h3_indexes)
+    return sql_region
+
+
 def multiprocessing_main():
-    def sql_insert(rows: multiprocessing.Queue) -> None:
-        sql_writer = SQLWriter(FILENAME)
-        while True:
-            row = rows.get()
-            if row is None:
-                break
-            sql_writer.insert_region(row)
-
-    def h3_long_operation(region_from_json: str) -> SQLRegion | None:
-        try:
-            blob_of_h3_indexes: bytes = cell_ids_to_bytes(
-                get_h3_cells_from_polygon(
-                    get_polygon_from_wkb(region_from_json.wkb), H3_RESOLUTION
-                )
-            )
-        except Exception as e:
-            print(e)
-            return None
-
-        region_name = get_name_from_geojson(region_from_json.attributes_geojson)
-        sql_region = SQLRegion(region_from_json.id, region_name, blob_of_h3_indexes)
-        return sql_region
-
     # Create the queues
     lines_from_file = multiprocessing.Queue()
     sql_rows = multiprocessing.Queue()
@@ -72,12 +71,10 @@ def multiprocessing_main():
 def sync_main():
     sql_writer = SQLWriter(FILENAME)
 
-    for region_from_json in read_tsv(PATH_TO_FILE):
+    for i, region_from_json in enumerate(read_tsv(PATH_TO_FILE)):
         try:
             blob_of_h3_indexes: bytes = cell_ids_to_bytes(
-                get_h3_cells_from_polygon(
-                    get_polygon_from_wkb(region_from_json.wkb), H3_RESOLUTION
-                )
+                get_h3_cells_from_wkb(region_from_json.wkb, H3_RESOLUTION)
             )
         except Exception as e:
             print(e)
@@ -89,6 +86,9 @@ def sync_main():
 
         sql_writer.insert_region(sql_region)
 
+        if i == 100:
+            break
+
 
 def remove_db():
     db_path = Path(__file__).parent / f"{FILENAME}.db"
@@ -99,8 +99,8 @@ def remove_db():
 def main():
     remove_db()
 
-    # sync_main()
-    multiprocessing_main()
+    sync_main()
+    # multiprocessing_main()
 
 
 if __name__ == "__main__":

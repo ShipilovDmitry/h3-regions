@@ -1,7 +1,7 @@
 from modules.parse_utils import get_name_from_geojson, read_tsv
-from modules.wbk_utils import get_polygon_from_wkb, from_wkb
-from shapely.geometry import Polygon, MultiPolygon
-from modules.draw_polygon_h3 import draw_mulitpolygon, draw_polygon
+import h3
+from modules.wbk_utils import get_h3_cells_from_wkb, from_wkb
+from shapely.geometry import MultiPolygon
 from pathlib import Path
 import pytest
 
@@ -25,9 +25,9 @@ def test_multipolygon_moscow() -> None:
     asset_path = ASSETS_DIR / moscow_asset
     with open(asset_path, "r") as f:
         wkb = f.read()
-    coordinates = get_polygon_from_wkb(wkb)
-    h3_polygon = [(coordinate.lat, coordinate.lon) for coordinate in coordinates]
-    # draw_polygon(h3_polygon)
+    coordinates = get_h3_cells_from_wkb(wkb, 10)
+    coordinates = [h3.int_to_str(coordinate) for coordinate in coordinates]
+    # draw_cells(coordinates)
 
 
 # for drawing polygon uncomment last line in function
@@ -37,10 +37,9 @@ def test_draw_polygon() -> None:
     with open(asset_path, "r") as f:
         wkb = f.read()
 
-    coordinates = get_polygon_from_wkb(wkb)
+    coordinates = get_h3_cells_from_wkb(wkb, 10)
 
-    polygon = [(coordinate.lat, coordinate.lon) for coordinate in coordinates]
-    # draw_polygon(polygon)
+    # draw_cells(polygon)
 
 
 def test_draw_multipolygon() -> None:
@@ -50,7 +49,8 @@ def test_draw_multipolygon() -> None:
         wkb = f.read()
     multipolygon: MultiPolygon = from_wkb(wkb)
 
-    polygons = list(multipolygon.geoms)
-    h3_polygons = [[(y, x) for x, y in polygon.exterior.coords] for polygon in polygons]
+    h3_polygons = [
+        [(y, x) for x, y in polygon.exterior.coords] for polygon in multipolygon.geoms
+    ]
 
     # draw_mulitpolygon(h3_polygons)

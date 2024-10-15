@@ -37,7 +37,7 @@ def plot_cells(cells, ax=None):
     plot_shape(shape, ax=ax)
 
 
-def plot_shape_and_cells(shape, res=9):
+def plot_shape_and_cells(shape, res):
     fig, axs = plt.subplots(1, 2, figsize=(10, 5), sharex=True, sharey=True)
     plot_shape(shape, ax=axs[0])
     plot_cells(h3.h3shape_to_cells(shape, res), ax=axs[1])

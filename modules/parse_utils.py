@@ -26,15 +26,15 @@ def get_name_from_geojson(geojson: str) -> str:
     data = json.loads(geojson)
     df = pd.DataFrame(data["properties"])
 
-    result = str() 
+    result = str()
     default: pd.DataFrame = df["locales"]["default"]
-    
+
     if "address" in default:
         address: pd.DataFrame = df["locales"]["default"]["address"]
         if "country" in address:
-            result = address["country"] 
-        
+            result = str(address["country"])
+
         if "region" in address:
             result = ",".join([result, address["region"]])
-    result = ",".join([result, default["name"]])
+    result = default["name"] if result == "" else ",".join([result, default["name"]])
     return result
