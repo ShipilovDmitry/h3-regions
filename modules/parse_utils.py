@@ -18,9 +18,9 @@ def read_tsv_queue(file_path: str, queue: multiprocessing.Queue) -> None:
     with open(file_path, "r") as file:
         for line in file:
             df = pd.read_csv(io.StringIO(line), sep="\t")
-            id, attributes_geojson, wbk = df.columns[0], df.columns[1], df.columns[2]
-            queue.put(RegionFromJson(id, attributes_geojson, wbk))
-    queue.put(None)
+            id, attributes_geojson, wkb = df.columns[0], df.columns[1], df.columns[2]
+            queue.put(RegionFromJson(id, attributes_geojson, wkb))
+    queue.put(None) # Poison pill
 
 
 def get_name_from_geojson(geojson: str) -> str:

@@ -18,7 +18,7 @@ def sql_insert(rows: multiprocessing.Queue) -> None:
     sql_writer = SQLWriter(FILENAME)
     while True:
         row = rows.get()
-        if row is None:
+        if row is None: # wait for Poison pill
             del sql_writer
             break
         sql_writer.insert_region(row)
