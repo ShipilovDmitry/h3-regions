@@ -5,7 +5,12 @@ import multiprocessing
 from modules.parse_utils import read_tsv, read_tsv_queue, get_name_from_geojson
 from modules.wbk_utils import get_h3_cells_from_wkb
 from modules.serializer import cell_ids_to_bytes
-from modules.sql_writer import SQLWriter, SQLWriterCellsCount, SQLRegion, SQLRegionCellsCount
+from modules.sql_writer import (
+    SQLWriter,
+    SQLWriterCellsCount,
+    SQLRegion,
+    SQLRegionCellsCount,
+)
 
 
 PATH_TO_FILE: str = "/Users/d.shipilov/vkmaps/h3-regions/town-city-village.jsonl"
@@ -18,7 +23,8 @@ def sql_insert(rows: multiprocessing.Queue) -> None:
     sql_writer = SQLWriterCellsCount(FILENAME)
     while True:
         row = rows.get()
-        if row is None: # wait for Poison pill
+        if row is None:  # wait for Poison pill
+            print("sql_insert: Poison pill")
             del sql_writer
             break
         sql_writer.insert_region(row)
@@ -71,6 +77,7 @@ def multiprocessing_main():
             sql_rows.put(sql_row)
 
     # Signal for the end of the processing
+    print("multiprocessing_main: Poison pill")
     sql_rows.put(None)
 
     # Wait for the processes to finish
@@ -95,7 +102,6 @@ def sync_main():
         sql_region = SQLRegion(region_from_json.id, region_name, blob_of_h3_indexes)
 
         sql_writer.insert_region(sql_region)
-
 
 
 def remove_db():
