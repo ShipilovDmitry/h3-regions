@@ -1,0 +1,1 @@
+grep -o '"kind":"[^"]*"' regions.jsonl | sort | uniq | sed 's/"kind":"//; s/"$//' > temp.log

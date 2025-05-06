@@ -20,6 +20,7 @@ def read_tsv_queue(file_path: str, queue: multiprocessing.Queue) -> None:
             df = pd.read_csv(io.StringIO(line), sep="\t")
             id, attributes_geojson, wkb = df.columns[0], df.columns[1], df.columns[2]
             queue.put(RegionFromJson(id, attributes_geojson, wkb))
+    print("read_tsv_queue: Poison pill")
     queue.put(None) # Poison pill
 
 

@@ -1,0 +1,1 @@
+cat regions.jsonl | grep -E '"kind":"(city|town|village)"' > tmp.log
