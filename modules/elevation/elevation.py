@@ -7,11 +7,12 @@
 # Write to the file
 from typing import Iterator
 from modules.common_types import Coordinate
-from modules.elevation.api import fetch_elevation
+from modules.elevation.api import fetch_elevation, async_fetch_elevation
 import h3
 from dataclasses import dataclass
 import math
 import csv
+import aiohttp
 
 
 @dataclass
@@ -93,8 +94,8 @@ def calculate_triangle_centroid(triangle: Triangle) -> Coordinate:
 
     return Coordinate(lat, lon)
 
-def average_russia_heights(path_to_cells: str, result_csv: str) -> None:
-    with open(result_csv, mode='w', newline='') as average_heights:
+def average_russia_heights(path_to_cells: str) -> None:
+    with open('average_russia_7.csv', mode='w', newline='') as average_heights:
         writer = csv.writer(average_heights)
         writer.writerow(['CellId, AverageHeight'])
         for cell_id in read_cell(path_to_cells):
@@ -102,8 +103,25 @@ def average_russia_heights(path_to_cells: str, result_csv: str) -> None:
             triangles = triangulate_hexagon(hexagon)
             centers = [calculate_triangle_centroid(trianlge) for trianlge in triangles]
             heights = fetch_elevation(centers)
-            if heights is None:
-                print(f"No elevation for {cell_id}")
+            if len(heights) == 0:
                 continue
             average_height = sum(heights) / len(heights)
-            writer.writerow([cell_id, average_height])
+            cell_id_no_n = cell_id[:-2]
+            writer.writerow([cell_id_no_n, average_height])
+
+
+async def async_average_russia_heights(path_to_cells:str) -> None:
+    with open('average_russia_7.csv', mode='w', newline='') as average_heights:
+        writer = csv.writer(average_heights)
+        writer.writerow(['CellId, AverageHeight'])
+        async with aiohttp.ClientSession() as session:
+            for cell_id in read_cell(path_to_cells):
+                hexagon = get_hexagon(cell_id)
+                triangles = triangulate_hexagon(hexagon)
+                centers = [calculate_triangle_centroid(trianlge) for trianlge in triangles]
+                heights = await async_fetch_elevation(session, centers)
+                if len(heights) == 0:
+                    continue
+                average_height = sum(heights) / len(heights)
+                cell_id_no_n = cell_id[:-2]
+                writer.writerow([cell_id_no_n, average_height])
