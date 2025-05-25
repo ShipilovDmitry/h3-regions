@@ -7,9 +7,11 @@
 # Write to the file
 from typing import Iterator
 from modules.common_types import Coordinate
+from modules.elevation.api import fetch_elevation
 import h3
 from dataclasses import dataclass
 import math
+import csv
 
 
 @dataclass
@@ -27,7 +29,9 @@ class Triangle:
 
 def read_cell(filename: str) -> Iterator[str]:
     with open(filename, "r") as f:
-        for line in f:
+        for i, line in enumerate(f):
+            if i % 10000 == 0:
+                print(f"Processed {i} rows")
             yield line
 
 
@@ -88,3 +92,18 @@ def calculate_triangle_centroid(triangle: Triangle) -> Coordinate:
     lat, lon = map(math.degrees, [lat, lon])
 
     return Coordinate(lat, lon)
+
+def average_russia_heights(path_to_cells: str, result_csv: str) -> None:
+    with open(result_csv, mode='w', newline='') as average_heights:
+        writer = csv.writer(average_heights)
+        writer.writerow(['CellId, AverageHeight'])
+        for cell_id in read_cell(path_to_cells):
+            hexagon = get_hexagon(cell_id)
+            triangles = triangulate_hexagon(hexagon)
+            centers = [calculate_triangle_centroid(trianlge) for trianlge in triangles]
+            heights = fetch_elevation(centers)
+            if heights is None:
+                print(f"No elevation for {cell_id}")
+                continue
+            average_height = sum(heights) / len(heights)
+            writer.writerow([cell_id, average_height])
