@@ -13,14 +13,14 @@ from modules.sql_writer import (
 )
 
 
-PATH_TO_FILE: str = "/Users/d.shipilov/vkmaps/h3-regions/town-city-village.jsonl"
+PATH_TO_FILE: str = "/Users/d.shipilov/workspace/blink/tmp.log"
 FILENAME = Path(PATH_TO_FILE).stem
 
-H3_RESOLUTION: int = 11
+H3_RESOLUTION: int = 7
 
 
 def sql_insert(rows: multiprocessing.Queue) -> None:
-    sql_writer = SQLWriterCellsCount(FILENAME)
+    sql_writer = SQLWriter(FILENAME)
     while True:
         row = rows.get()
         if row is None:  # wait for Poison pill
@@ -72,7 +72,7 @@ def multiprocessing_main():
     # Create a process pool and map the process_data function to the input queue
     with multiprocessing.Pool() as pool:
         for sql_row in pool.imap_unordered(
-            h3_long_opearation_count_cells, iter(lines_from_file.get, None)
+            h3_long_operation, iter(lines_from_file.get, None)
         ):
             sql_rows.put(sql_row)
 
