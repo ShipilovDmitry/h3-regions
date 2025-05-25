@@ -11,6 +11,7 @@ import h3
 from dataclasses import dataclass
 import math
 
+
 @dataclass
 class Hexagon:
     center: Coordinate
@@ -77,7 +78,7 @@ def calculate_triangle_centroid(triangle: Triangle) -> Coordinate:
         + math.cos(lat3) * math.sin(lon3)
     ) / 3
     z = (math.sin(lat1) + math.sin(lat2) + math.sin(lat3)) / 3
-    
+
     # Convert the centroid back to latitude and longitude
     lon = math.atan2(y, x)
     hyp = math.sqrt(x * x + y * y)
