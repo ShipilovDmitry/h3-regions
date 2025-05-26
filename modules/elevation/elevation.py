@@ -103,7 +103,7 @@ def average_russia_heights(path_to_cells: str) -> None:
             triangles = triangulate_hexagon(hexagon)
             centers = [calculate_triangle_centroid(trianlge) for trianlge in triangles]
             heights = fetch_elevation(centers)
-            if len(heights) == 0:
+            if heights is None or len(heights) == 0:
                 continue
             average_height = sum(heights) / len(heights)
             cell_id_no_n = cell_id[:-1]
@@ -120,7 +120,7 @@ async def async_average_russia_heights(path_to_cells:str) -> None:
                 triangles = triangulate_hexagon(hexagon)
                 centers = [calculate_triangle_centroid(trianlge) for trianlge in triangles]
                 heights = await async_fetch_elevation(session, centers)
-                if len(heights) == 0:
+                if heights is None or len(heights) == 0:
                     continue
                 average_height = sum(heights) / len(heights)
                 cell_id_no_n = cell_id[:-1]
