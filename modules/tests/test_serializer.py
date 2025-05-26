@@ -29,15 +29,17 @@ def test_bytes_to_cell_ids():
 
 
 def test_draw_cells_from_bytes():
-    return
-    db_path = "/Users/d.shipilov/vkmaps/h3-regions/artifacts/town-city-village-10-level.db"
+    db_path = "/Users/d.shipilov/workspace/blink/h3-regions/tmp.db"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     result: bytes = cursor.execute(
-        "SELECT hexagons FROM regions WHERE id = '71000000017CE494'"
+        "SELECT hexagons FROM regions WHERE id = '71000000001B82D6'"
     ).fetchall()[0][0]
     cells = bytes_to_cell_ids(result)
 
     str_cells = [h3.int_to_str(cell) for cell in cells]
+    with open("cells-russia-7.txt", 'w') as f:
+        for cell in str_cells:
+            f.write(cell + '\n')
 
     draw_cells(str_cells)

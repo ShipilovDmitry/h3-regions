@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import multiprocessing
+import asyncio
 
 from modules.parse_utils import read_tsv, read_tsv_queue, get_name_from_geojson
 from modules.wbk_utils import get_h3_cells_from_wkb
@@ -11,16 +12,17 @@ from modules.sql_writer import (
     SQLRegion,
     SQLRegionCellsCount,
 )
+from modules.elevation.elevation import async_average_russia_heights
 
 
-PATH_TO_FILE: str = "/Users/d.shipilov/vkmaps/h3-regions/town-city-village.jsonl"
+PATH_TO_FILE: str = "/Users/d.shipilov/workspace/blink/tmp.log"
 FILENAME = Path(PATH_TO_FILE).stem
 
-H3_RESOLUTION: int = 11
+H3_RESOLUTION: int = 7
 
 
 def sql_insert(rows: multiprocessing.Queue) -> None:
-    sql_writer = SQLWriterCellsCount(FILENAME)
+    sql_writer = SQLWriter(FILENAME)
     while True:
         row = rows.get()
         if row is None:  # wait for Poison pill
@@ -72,7 +74,7 @@ def multiprocessing_main():
     # Create a process pool and map the process_data function to the input queue
     with multiprocessing.Pool() as pool:
         for sql_row in pool.imap_unordered(
-            h3_long_opearation_count_cells, iter(lines_from_file.get, None)
+            h3_long_operation, iter(lines_from_file.get, None)
         ):
             sql_rows.put(sql_row)
 
@@ -110,12 +112,17 @@ def remove_db():
         os.remove(db_path)
 
 
-def main():
-    remove_db()
+async def main():
+    await async_average_russia_heights('/Users/d.shipilov/workspace/blink/h3-regions/cells-russia-7.txt')
+
+# def main():
+    # remove_db()
 
     # sync_main()
-    multiprocessing_main()
+    # multiprocessing_main()
+
+    # average_russia_heights("/Users/d.shipilov/workspace/blink/h3-regions/cells-russia-7.txt")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
