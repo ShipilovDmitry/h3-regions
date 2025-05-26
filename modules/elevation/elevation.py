@@ -106,7 +106,7 @@ def average_russia_heights(path_to_cells: str) -> None:
             if len(heights) == 0:
                 continue
             average_height = sum(heights) / len(heights)
-            cell_id_no_n = cell_id[:-2]
+            cell_id_no_n = cell_id[:-1]
             writer.writerow([cell_id_no_n, average_height])
 
 
