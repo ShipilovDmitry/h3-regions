@@ -1,0 +1,55 @@
+{
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        37.62544402,
+        55.7245371
+      ]
+    },
+    "bbox": [
+      37.290502,
+      55.491308,
+      37.967428,
+      55.957772
+    ],
+    "properties": {
+      "kind": "city",
+      "rank": 8,
+      "ref": "7100000001636425",
+      "oref": "030000000026FCFD",
+      "locales": {
+        "default": {
+          "name": "Москва",
+          "address": {
+            "country": "Россия",
+            "region": "Москва",
+            "locality": "Москва"
+          }
+        },
+        "en": {
+          "name": "Moscow",
+          "address": {
+            "country": "Russia",
+            "region": "Moscow",
+            "locality": "Moscow"
+          }
+        },
+        "ru": {
+          "name": "Москва",
+          "address": {
+            "country": "Россия",
+            "region": "Москва",
+            "locality": "Москва"
+          }
+        }
+      },
+      "address_refs": {
+        "country": "71000000022E03F1",
+        "region": "7100000001636536",
+        "locality": "7100000001636425"
+      },
+      "code": "RU",
+      "dref": "7100000001636536"
+    }
+}
