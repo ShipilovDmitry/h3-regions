@@ -1,5 +1,5 @@
 from typing import Iterator
-from modules.common_types import RegionFromJson
+from modules.region_to_hexagons.common_types import RegionFromJson
 import pandas as pd
 import io
 import json

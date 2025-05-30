@@ -1,7 +1,7 @@
-from modules.parse_utils import get_name_from_geojson, read_tsv
-from modules.draw_polygon_h3 import draw_mulitpolygon
+from modules.region_to_hexagons.parse_utils import get_name_from_geojson, read_tsv
+from modules.region_to_hexagons.draw_polygon_h3 import draw_mulitpolygon
 import h3
-from modules.wbk_utils import get_h3_cells_from_wkb, from_wkb
+from modules.region_to_hexagons.wbk_utils import get_h3_cells_from_wkb, from_wkb
 from shapely.geometry import MultiPolygon
 from pathlib import Path
 import pytest

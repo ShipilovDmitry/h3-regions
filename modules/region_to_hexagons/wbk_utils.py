@@ -1,6 +1,6 @@
 from shapely import from_wkb, Polygon, MultiPolygon
-from modules.h3_utils import get_h3_cells_from_polygon, get_h3_cells_from_multipolygon
-from modules.common_types import Coordinate, H3CellId
+from modules.region_to_hexagons.h3_utils import get_h3_cells_from_polygon, get_h3_cells_from_multipolygon
+from modules.region_to_hexagons.common_types import  H3CellId
 
 
 def process_multipolygon(
@@ -24,5 +24,5 @@ def get_h3_cells_from_wkb(wkb: str, resolution: int) -> list[H3CellId]:
         return process_multipolygon(wkb_region, resolution)
 
     raise ValueError(
-        f"Invalid WKB data. Expected a Polygon. Geometry type is: {p.geom_type}"
+        "Invalid WKB data. Expected a Polygon."
     )
