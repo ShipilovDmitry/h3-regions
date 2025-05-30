@@ -1,6 +1,7 @@
 import h3
 from modules.region_to_hexagons.common_types import H3CellId
 
+
 def get_h3_cells_from_polygon(
     polygon: list[tuple[float, float]], resolution: int
 ) -> list[H3CellId]:
