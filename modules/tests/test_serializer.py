@@ -29,7 +29,10 @@ def test_bytes_to_cell_ids():
 
 
 def test_draw_cells_from_bytes():
-    db_path = "/Users/d.shipilov/workspace/blink/h3-regions/tmp.db"
+    # Moscow 71000000002585F7
+    # Kazan 710000000027FD5C
+    # Russia 71000000001B82D6
+    db_path = "/Users/d.shipilov/workspace/blink/h3-regions/russia-8.db"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     result: bytes = cursor.execute(
@@ -38,8 +41,8 @@ def test_draw_cells_from_bytes():
     cells = bytes_to_cell_ids(result)
 
     str_cells = [h3.int_to_str(cell) for cell in cells]
-    with open("cells-russia-7.txt", 'w') as f:
+    with open("cells-russia-8.txt", 'w') as f:
         for cell in str_cells:
             f.write(cell + '\n')
 
-    draw_cells(str_cells)
+    # draw_cells(str_cells)
