@@ -1,6 +1,6 @@
-from modules.serializer import cell_ids_to_bytes, bytes_to_cell_ids
+from modules.region_to_hexagons.serializer import cell_ids_to_bytes, bytes_to_cell_ids
 import h3
-from modules.draw_polygon_h3 import draw_cells
+from modules.region_to_hexagons.draw_polygon_h3 import draw_cells
 import sqlite3
 
 
@@ -32,17 +32,17 @@ def test_draw_cells_from_bytes():
     # Moscow 71000000002585F7
     # Kazan 710000000027FD5C
     # Russia 71000000001B82D6
-    db_path = "/Users/d.shipilov/workspace/blink/h3-regions/russia-8.db"
+    db_path = "/Users/d.shipilov/workspace/blink/h3-regions/only-moscow-5.db"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     result: bytes = cursor.execute(
-        "SELECT hexagons FROM regions WHERE id = '71000000001B82D6'"
+        "SELECT hexagons FROM regions WHERE id = '71000000002585F7'"
     ).fetchall()[0][0]
     cells = bytes_to_cell_ids(result)
 
     str_cells = [h3.int_to_str(cell) for cell in cells]
-    with open("cells-russia-8.txt", 'w') as f:
-        for cell in str_cells:
-            f.write(cell + '\n')
+    # with open("cells-russia-7.txt", 'w') as f:
+    #     for cell in str_cells:
+    #         f.write(cell + '\n')
 
-    # draw_cells(str_cells)
+    draw_cells(str_cells)

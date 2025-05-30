@@ -1,4 +1,4 @@
-from modules.common_types import H3CellId
+from modules.region_to_hexagons.common_types import H3CellId
 import struct
 
 
