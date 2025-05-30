@@ -15,7 +15,6 @@ from modules.sql_writer import (
 from modules.elevation.elevation import async_average_russia_heights
 
 
-# Parsing regions sync/multiprocessing
 PATH_TO_FILE: str = "/Users/d.shipilov/workspace/blink/tmp.log"
 FILENAME = Path(PATH_TO_FILE).stem
 
@@ -113,6 +112,9 @@ def remove_db():
         os.remove(db_path)
 
 
+async def main():
+    await async_average_russia_heights('/Users/d.shipilov/workspace/blink/h3-regions/cells-russia-7.txt')
+
 # def main():
     # remove_db()
 
@@ -121,9 +123,6 @@ def remove_db():
 
     # average_russia_heights("/Users/d.shipilov/workspace/blink/h3-regions/cells-russia-7.txt")
 
-# Elevation code
-async def main():
-    await async_average_russia_heights('/Users/d.shipilov/workspace/blink/h3-regions/cells-russia-7.txt')
 
 if __name__ == "__main__":
     asyncio.run(main())
